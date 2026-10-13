@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LexVerify - Legal answers you can check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E2620; --green:#1B4D3E; --green-2:#2A6A56;
+  --paper:#F3F6F3; --card:#FFFFFF; --line:#D9E0DB;
+  --text:#17211C; --muted:#56635D; --brass:#B07D2B; --brass-soft:#F3E6C8;
+  --good:#1E7A4C; --warn:#A8680F; --bad:#A83232;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--text);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{background:var(--ink);color:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(255,255,255,.08)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.45rem;font-weight:600;text-decoration:none;letter-spacing:.2px}
+.logo svg{width:26px;height:26px}
+nav{display:flex;align-items:center;gap:28px;font-size:.95rem}
+nav a{text-decoration:none;color:#C9D6D0}
+nav a:hover{color:#fff}
+.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 20px;cursor:pointer;background:var(--brass);color:#1b1305;text-decoration:none;display:inline-block;transition:background .15s}
+.btn:hover{background:#C89135}
+nav .btn{padding:8px 16px;color:#1b1305}
+
+/* hero */
+.hero{background:var(--ink);color:#fff;padding:72px 0 120px;background-image:radial-gradient(ellipse at 85% 0%,rgba(42,106,86,.55),transparent 55%)}
+.hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.4rem,5.4vw,4rem);line-height:1.08;max-width:15ch;letter-spacing:-.5px}
+.hero p.lead{margin-top:20px;font-size:1.15rem;color:#BCCBC4;max-width:52ch}
+.ask{margin-top:36px;background:var(--card);border-radius:14px;padding:10px;display:flex;gap:10px;max-width:760px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.ask input{flex:1;border:0;font:inherit;font-size:1.05rem;padding:12px 14px;color:var(--text);background:transparent;min-width:0}
+.ask input:focus{outline:none}
+.ask:focus-within{outline:3px solid var(--brass)}
+.chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;max-width:760px}
+.chip{font:inherit;font-size:.9rem;color:#DDE7E2;background:transparent;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chip:hover{background:rgba(255,255,255,.1)}
+
+/* result */
+.result-wrap{margin-top:-72px}
+.result{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px rgba(14,38,32,.12);display:grid;grid-template-columns:1.15fr 1fr;overflow:hidden}
+.answer,.sources{padding:30px 32px}
+.sources{background:#F8FAF8;border-left:1px solid var(--line)}
+.answer h2,.sources h2{font-size:.95rem;font-weight:600;color:var(--muted);margin-bottom:14px}
+.answer .q{font-family:var(--serif);font-size:1.5rem;line-height:1.25;margin-bottom:16px;font-weight:500}
+.answer .body{font-family:var(--serif);font-size:1.18rem;line-height:1.7}
+.mark{font:600 .72rem var(--sans);vertical-align:super;background:var(--brass-soft);color:#6b4a0f;border:0;border-radius:4px;padding:1px 6px;margin:0 2px;cursor:pointer}
+.mark:hover,.mark.on{background:var(--brass);color:#fff}
+.empty{color:var(--muted);font-family:var(--sans);font-size:1rem}
+.src{border:1px solid var(--line);background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:12px;transition:border-color .15s,box-shadow .15s}
+.src.on{border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.src b{display:block;font-size:.95rem}
+.src small{color:var(--muted);display:block;margin-bottom:6px}
+.src p{font-family:var(--serif);font-size:1rem;color:#2c3833}
+.note{font-size:.82rem;color:var(--muted);margin-top:6px}
+
+/* sections */
+section{padding:84px 0 0}
+h2.title{font-family:var(--serif);font-weight:500;font-size:clamp(1.8rem,3.4vw,2.5rem);line-height:1.15;max-width:22ch}
+.sub{color:var(--muted);margin-top:12px;max-width:60ch}
+
+.features{margin-top:36px;border-top:1px solid var(--line)}
+.feat{display:grid;grid-template-columns:260px 1fr auto;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line)}
+.feat h3{font-family:var(--serif);font-weight:600;font-size:1.3rem}
+.feat p{color:var(--muted)}
+.tag{font-size:.8rem;font-weight:600;border-radius:999px;padding:3px 12px;white-space:nowrap}
+.tag.now{background:var(--brass-soft);color:#6b4a0f}
+.tag.next{background:#E4EBE7;color:var(--muted)}
+
+.verdicts{margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.verdict{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:10px;padding:22px}
+.verdict strong{font-family:var(--serif);font-size:1.35rem;color:var(--c)}
+.verdict p{margin-top:8px;color:var(--muted);font-size:.97rem}
+
+.steps{margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:36px;counter-reset:s}
+.step{border-top:2px solid var(--green);padding-top:16px}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--serif);font-size:2rem;color:var(--green);display:block;line-height:1}
+.step h3{font-family:var(--serif);font-size:1.25rem;margin:8px 0 6px}
+.step p{color:var(--muted)}
+
+footer{margin-top:96px;background:var(--ink);color:#A9BAB3;padding:36px 0;font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+footer strong{color:#fff;font-family:var(--serif);font-size:1.1rem}
+
+@media(max-width:860px){
+  .result{grid-template-columns:1fr}
+  .sources{border-left:0;border-top:1px solid var(--line)}
+  .feat{grid-template-columns:1fr;gap:6px}
+  .verdicts,.steps{grid-template-columns:1fr}
+  nav a:not(.btn){display:none}
+  .ask{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a href="#top" class="logo" aria-label="LexVerify home">
+      <svg viewBox="0 0 32 32" fill="none" stroke="#E2B65A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4v24M8 28h16M5 10h22M5 10l-3 9a4 4 0 0 0 8 0zM27 10l-3 9a4 4 0 0 0 8 0z"/></svg>
+      LexVerify
+    </a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#validity">Citation checker</a>
+      <a href="#how">How it works</a>
+      <a href="#top" class="btn">Ask a question</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <h1>Legal answers you can check line by line.</h1>
+    <p class="lead">Ask in plain English. LexVerify answers only from Indian judgments and statutes it can show you, so every claim comes with its source.</p>
+
+    <form class="ask" id="askForm" role="search">
+      <input id="q" type="text" placeholder="Ask about Indian contract law..." aria-label="Your legal question" autocomplete="off">
+      <button class="btn" type="submit">Find answer</button>
+    </form>
+    <div class="chips" aria-label="Example questions">
+      <button class="chip" data-k="1">What makes an agreement a contract?</button>
+      <button class="chip" data-k="2">Is a minor's agreement valid?</button>
+      <button class="chip" data-k="3">What is a void agreement?</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap result-wrap">
+  <div class="result" aria-live="polite">
+    <div class="answer">
+      <h2>Answer</h2>
+      <div id="out"><p class="empty">Pick an example question above to see how answers and sources appear side by side.</p></div>
+    </div>
+    <div class="sources">
+      <h2>Sources</h2>
+      <div id="src"><p class="empty">Sources used for the answer will be listed here. Click a number in the answer to find its source.</p></div>
+      <p class="note">Sample content for demonstration. Live search connects to the backend in a later phase.</p>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2 class="title">Five tools for one job: finding reliable law fast</h2>
+    <div class="features">
+      <div class="feat"><h3>Question answering</h3><p>Plain-language questions answered strictly from retrieved judgments and statutes, with sources shown.</p><span class="tag now">Building first</span></div>
+      <div class="feat"><h3>Smart case search</h3><p>Find relevant case law by describing the situation, not by guessing the exact legal term.</p><span class="tag now">Building first</span></div>
+      <div class="feat"><h3>Citation checker</h3><p>See whether a judgment is still good law, questioned, or overruled by later decisions.</p><span class="tag next">Planned</span></div>
+      <div class="feat"><h3>Document risk flags</h3><p>Upload a rent or employment agreement and get risky or missing clauses, each tied to a statute or precedent.</p><span class="tag next">Planned</span></div>
+      <div class="feat"><h3>Summaries</h3><p>Judgments broken into facts, issues, arguments and ruling. Documents into parties, obligations, dates and amounts.</p><span class="tag next">Planned</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="validity">
+  <div class="wrap">
+    <h2 class="title">Know if a case can still be relied on</h2>
+    <p class="sub">Every judgment will carry one of three statuses, worked out from how later and higher courts treated it.</p>
+    <div class="verdicts">
+      <div class="verdict" style="--c:var(--good)"><strong>Good law</strong><p>No negative treatment found in later decisions.</p></div>
+      <div class="verdict" style="--c:var(--warn)"><strong>Questioned</strong><p>Later courts doubted, distinguished or limited its reasoning.</p></div>
+      <div class="verdict" style="--c:var(--bad)"><strong>Overruled</strong><p>A higher court or larger bench has set it aside.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2 class="title">How LexVerify keeps answers honest</h2>
+    <div class="steps">
+      <div class="step"><h3>You ask</h3><p>Type your question the way you would ask a colleague.</p></div>
+      <div class="step"><h3>It retrieves</h3><p>Matching passages are pulled from real judgments and bare acts. Nothing else is used.</p></div>
+      <div class="step"><h3>You verify</h3><p>The answer cites each passage, so you can open the source and confirm it yourself.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><strong>LexVerify</strong><br>Verified legal research for Indian law.</div>
+    <div>A research aid, not legal advice.<br>Always confirm against the original source.</div>
+  </div>
+</footer>
+
+<script>
+const DATA = {
+  1: {
+    q: "What makes an agreement a contract?",
+    body: 'Under Section 10 of the Indian Contract Act, 1872, an agreement becomes a contract when it is made with the free consent of parties who are competent to contract, for a lawful consideration and a lawful object, and is not expressly declared void <button class="mark" data-n="1">1</button>. Consent is free only when it is not caused by coercion, undue influence, fraud, misrepresentation or mistake <button class="mark" data-n="2">2</button>.',
+    src: [
+      ["Indian Contract Act, 1872, Section 10", "Bare act", "Lists the conditions an agreement must meet to be a contract: free consent, competent parties, lawful consideration and object."],
+      ["Indian Contract Act, 1872, Section 14", "Bare act", "Defines free consent and the five factors that make consent not free."]
+    ]
+  },
+  2: {
+    q: "Is a minor's agreement valid?",
+    body: 'No. A person who has not reached the age of majority is not competent to contract under Section 11 <button class="mark" data-n="1">1</button>. The Privy Council held in Mohori Bibee v. Dharmodas Ghose that such an agreement is void from the start, not merely voidable <button class="mark" data-n="2">2</button>.',
+    src: [
+      ["Indian Contract Act, 1872, Section 11", "Bare act", "States who is competent to contract, excluding minors and persons of unsound mind."],
+      ["Mohori Bibee v. Dharmodas Ghose (1903) 30 IA 114", "Privy Council", "Leading authority that a minor's agreement is void ab initio."]
+    ]
+  },
+  3: {
+    q: "What is a void agreement?",
+    body: 'An agreement that the law cannot enforce is void <button class="mark" data-n="1">1</button>. A contract that was valid when made can also become void later, at the point it stops being enforceable by law <button class="mark" data-n="2">2</button>.',
+    src: [
+      ["Indian Contract Act, 1872, Section 2(g)", "Bare act", "Defines a void agreement as one not enforceable by law."],
+      ["Indian Contract Act, 1872, Section 2(j)", "Bare act", "Explains that a contract becomes void when it ceases to be enforceable by law."]
+    ]
+  }
+};
+const out = document.getElementById('out'), src = document.getElementById('src'), q = document.getElementById('q');
+
+function show(k){
+  const d = DATA[k];
+  q.value = d.q;
+  out.innerHTML = '<p class="q">' + d.q + '</p><div class="body">' + d.body + '</div>';
+  src.innerHTML = d.src.map((s,i) =>
+    '<div class="src" data-n="' + (i+1) + '"><small>' + s[1] + ' - source ' + (i+1) + '</small><b>' + s[0] + '</b><p>' + s[2] + '</p></div>').join('');
+  document.querySelector('.result-wrap').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function light(n){
+  document.querySelectorAll('.src').forEach(e => e.classList.toggle('on', e.dataset.n === n));
+  document.querySelectorAll('.mark').forEach(e => e.classList.toggle('on', e.dataset.n === n));
+}
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => show(c.dataset.k)));
+document.addEventListener('click', e => { const m = e.target.closest('.mark'); if(m) light(m.dataset.n); });
+document.addEventListener('mouseover', e => { const m = e.target.closest('.mark'); if(m) light(m.dataset.n); });
+
+document.getElementById('askForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const text = q.value.trim().toLowerCase();
+  const hit = Object.keys(DATA).find(k => DATA[k].q.toLowerCase() === text);
+  if(hit){ show(hit); return; }
+  out.innerHTML = '<p class="empty">Live search is not connected yet. Try one of the three example questions to see how answers and sources work.</p>';
+  src.innerHTML = '<p class="empty">No sources yet.</p>';
+});
+</script>
+</body>
+</html>
